@@ -33,6 +33,15 @@ class Tagger {
                     this.nodes.push(Node);
 
                     const element = document.createElement("IMG");
+                    element.x = node.x;
+                    element.y = node.y;
+                    element.width  = node.width;
+                    element.height = node.height;
+                    element.naturalWidth  = node.naturalWidth;
+                    element.naturalHeight = node.naturalHeight;
+                    element.src = node.src;
+                    element.alt = node.alt;
+
                     element.setAttribute("ip-clone-index", index);
                     element.setAttribute("x", node.x);
                     element.setAttribute("y", node.y);
@@ -42,6 +51,7 @@ class Tagger {
                     element.setAttribute("naturalHeight", node.naturalHeight);
                     element.setAttribute("src", PLACEHOLDER_IMG_URL);
                     element.setAttribute("alt", PLACEHOLDER_IMG_URL);
+                    element
                     // this.addEventListener("onChange", ()=>{});
                     document.body.appendChild(element);
                     console.log("cloned")

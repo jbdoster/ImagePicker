@@ -5,6 +5,8 @@
 - Handle the way the browser pulls images from cache, overwrite
 - Lib global browser company enumeration for feature compat
 -- DOM element access keys
+- Whitelist hosts list
+- Exclude hidden/non human visible photos
 
 <h1>Considerations</h1>
 
