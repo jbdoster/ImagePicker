@@ -1,6 +1,10 @@
 <h1>TODO</h1>
 - Ask for permissions
 - Build interface contracts
+- Handle exceptions for chrome/other deniable urls
+- Handle the way the browser pulls images from cache, overwrite
+- Lib global browser company enumeration for feature compat
+-- DOM element access keys
 
 <h1>Considerations</h1>
 
@@ -19,5 +23,5 @@ elements, so a good tree traversing strategy can save a lot of
 headaches when making changes on what attributes we want to focus on.
 
 
-So we'll Parse DOM and update node with attr <ext-name>=<hash> if it contains an image.
+So we'll Parse DOM, scrape preexisting image elements and create new elements with the highest z-index.
 DFS will work O(V + E).
