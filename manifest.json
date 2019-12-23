@@ -4,20 +4,25 @@
     "description": "",
     "manifest_version": 2,
     "background": {
-      "scripts": ["background.js"]
+      "scripts": [
+        "background.js"
+      ]
     },
     "permissions": [
-      "activeTab",
       "tabs",
-      "storage"
+      "http://*/*",
+      "https://*/*",
+      "file://*/*",
+      "ftp://*/*"
     ],
     "content_scripts": [{
-      "matches":    ["http://*/*", "https://*/*"],
-      "js":         ["content.js"],
-      "run_at": "document_end",
-      "all_frames": true
-   }],
-   "web_accessible_resources": [
-      "content.js"
-    ]
+      "matches":    [
+        "http://*/*",
+        "https://*/*",
+        "file://*/*",
+        "ftp://*/*"],
+      "js": [
+        "content.js"
+      ]
+   }]
   }
