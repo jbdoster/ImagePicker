@@ -25,5 +25,14 @@ elements, so a good tree traversing strategy can save a lot of
 headaches when making changes on what attributes we want to focus on.
 
 
-So we'll Parse DOM, scrape preexisting image elements and create new elements with the highest z-index.
-DFS will work O(V + E).
+So we'll Parse DOM, scrape preexisting image elements and create new elements with highest z-index to cover the original photos.
+
+<h2>Filter Conditions</h2>
+
+Our particular <em>goal</em> here is to walk up the parents
+until we can determine which container is actually controlling
+the interaction with each img element.
+
+Goes something like this.
+- Has parent^?
+-- Delimit (class, )
