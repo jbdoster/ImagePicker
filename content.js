@@ -73,29 +73,8 @@ class Tagger {
         for(let mutation of mutationsList) {
             if (mutation.type === 'childList') {
                 console.log('A child node has been added or removed.');
-                this._untagged_nodes.push(mutation.target);
-                const attrs = mutation.target.getAttributeNames();
-                if (!attrs) { continue; }
-                for (const attr of attrs) {
-                    const value = mutation.target.getAttribute(attr);
-                    if (!value) { continue; }
-                    if (
-                        value.includes('JPEG')   || value.includes('JPG')   || 
-                        value.includes('jpeg')   || value.includes('jpeg')  ||
-                        value.includes('png')    || value.includes('logo')  ||
-                        value.includes('img')    || value.includes('gif')   ||
-                        value.includes('bitmap') || value.includes('bmp')   || 
-                        value.includes('photo')  || value.includes("base64")||
-                        value.includes('displ')  || value.includes('image') || 
-                        value.includes('svg')    || mutation.target.nodeType === "IMG"
-                    ) {
-                        mutation.target.style.filter = "blur(20px)";
-                        mutation.target.style.WebkitFilter = "blur(20px)";
-                        mutation.target["ip-index"] = new Date().getMilliseconds().toString();
-                        this._tagged_nodes.push(mutation.target);
-                    }
-                }
-            
+                const nodes = mutation.target.querySelectorAll("*");
+                this._tag(nodes); 
             }
         }
     };
