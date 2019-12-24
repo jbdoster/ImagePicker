@@ -62,23 +62,14 @@ class Tagger {
 
     set_dom_listener(targetNode) {
 
-        // Options for the observer (which mutations to observe)
         const config = { attributes: true, childList: true, subtree: true };
-
         this.listener_callback = this.listener_callback.bind(this);
-        // Create an observer instance linked to the callback function
         this.observer = new MutationObserver(this.listener_callback);
-
-        // Start observing the target node for configured mutations
         this.observer.observe(targetNode, config);
-
-        // Later, you can stop observing
         // observer.disconnect();
     }
 
-    // Callback function to execute when mutations are observed
     listener_callback(mutationsList, observer) {
-        // Use traditional 'for loops' for IE 11
         for(let mutation of mutationsList) {
             if (mutation.type === 'childList') {
                 console.log('A child node has been added or removed.');
@@ -89,7 +80,7 @@ class Tagger {
                     const value = mutation.target.getAttribute(attr);
                     if (!value) { continue; }
                     if (
-                        value.includes('JPEG')  || value.includes('JPG')   || 
+                        value.includes('JPEG')   || value.includes('JPG')   || 
                         value.includes('jpeg')   || value.includes('jpeg')  ||
                         value.includes('png')    || value.includes('logo')  ||
                         value.includes('img')    || value.includes('gif')   ||

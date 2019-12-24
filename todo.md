@@ -2,12 +2,16 @@
 - Ask for permissions
 - Build interface contracts
 - Handle exceptions for chrome/other deniable urls
-- Handle the way the browser pulls images from cache, overwrite
-- Lib global browser company enumeration for feature compat
+- Lib global browser distributor enumeration for dynamic code platform compat
 -- DOM element access keys
 - Whitelist hosts list
 - Exclude hidden/non human visible photos
-- Handle dynamic scroll loading and pagination
+x Handle dynamic scroll loading and pagination
+- Cache/storage
+- Logging
+- Telemetry
+- Handle click events (hover, or Cartesian coordinate system at worst)
+
 
 <h1>Considerations</h1>
 
