@@ -12,6 +12,8 @@ class Tagger {
     constructor(nodes) {
         this._untagged_nodes = [];
         this._tagged_nodes = [];
+        this.set_dom_listener.bind(this);
+        this.listener_callback.bind(this);
         this._tag.bind(this);
         this._tag(nodes);
     }
@@ -38,7 +40,7 @@ class Tagger {
                 const value = node.getAttribute(attr);
                 if (!value) { continue; }
                 if (
-                    (value.includes('JPEG')  || value.includes('JPG')   || 
+                    value.includes('JPEG')  || value.includes('JPG')   || 
                     value.includes('jpeg')   || value.includes('jpeg')  ||
                     value.includes('png')    || value.includes('logo')  ||
                     value.includes('img')    || value.includes('gif')   ||
@@ -46,7 +48,6 @@ class Tagger {
                     value.includes('photo')  || value.includes("base64")||
                     value.includes('displ')  || value.includes('image') || 
                     value.includes('svg')    || node.nodeType === "IMG"
-                    )
                 ) {
                     node.style.filter = "blur(20px)";
                     node.style.WebkitFilter = "blur(20px)";
@@ -59,6 +60,56 @@ class Tagger {
         console.log("untagged nodes: ", this._untagged_nodes);
     }
 
+    set_dom_listener(targetNode) {
+
+        // Options for the observer (which mutations to observe)
+        const config = { attributes: true, childList: true, subtree: true };
+
+        this.listener_callback = this.listener_callback.bind(this);
+        // Create an observer instance linked to the callback function
+        this.observer = new MutationObserver(this.listener_callback);
+
+        // Start observing the target node for configured mutations
+        this.observer.observe(targetNode, config);
+
+        // Later, you can stop observing
+        // observer.disconnect();
+    }
+
+    // Callback function to execute when mutations are observed
+    listener_callback(mutationsList, observer) {
+        // Use traditional 'for loops' for IE 11
+        for(let mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                console.log('A child node has been added or removed.');
+                this._untagged_nodes.push(mutation.target);
+                const attrs = mutation.target.getAttributeNames();
+                if (!attrs) { continue; }
+                for (const attr of attrs) {
+                    const value = mutation.target.getAttribute(attr);
+                    if (!value) { continue; }
+                    if (
+                        value.includes('JPEG')  || value.includes('JPG')   || 
+                        value.includes('jpeg')   || value.includes('jpeg')  ||
+                        value.includes('png')    || value.includes('logo')  ||
+                        value.includes('img')    || value.includes('gif')   ||
+                        value.includes('bitmap') || value.includes('bmp')   || 
+                        value.includes('photo')  || value.includes("base64")||
+                        value.includes('displ')  || value.includes('image') || 
+                        value.includes('svg')    || mutation.target.nodeType === "IMG"
+                    ) {
+                        mutation.target.style.filter = "blur(20px)";
+                        mutation.target.style.WebkitFilter = "blur(20px)";
+                        mutation.target["ip-index"] = new Date().getMilliseconds().toString();
+                        this._tagged_nodes.push(mutation.target);
+                    }
+                }
+            
+            }
+        }
+    };
+
 }
 
 const tagger = new Tagger(document.querySelectorAll("*"));
+tagger.set_dom_listener(document.body);
