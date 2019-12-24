@@ -21,6 +21,15 @@ class Tagger {
         if (!nodes) {console.log("no nodes"); return;}
         if (nodes.length < 1) {console.log("0 nodes"); return;}
 
+        /**
+         * document.querySelectorAll("*") returns a NodeList
+         * which is a "live list" managed by the DOM. This means
+         * sorting can change depending on which attrs we set,
+         * mainly with classes. To avoid this, we copy the elements 
+         * of the list to our own object first then iterate to avoid
+         * missing elements.
+         */
+        // for (const Node of nodes) { this._untagged_nodes.push(Node); }
         for (const node of nodes) {
             this._untagged_nodes.push(node);
             const attrs = node.getAttributeNames();
@@ -28,16 +37,16 @@ class Tagger {
             for (const attr of attrs) {
                 const value = node.getAttribute(attr);
                 if (!value) { continue; }
-                if (value === "https://image-store.slidesharecdn.com/aa79c260-f81f-4225-ba05-7318c77c7541-small.png") {
-                    node;
-                }
                 if (
                     (value.includes('JPEG')  || value.includes('JPG')   || 
                     value.includes('jpeg')   || value.includes('jpeg')  ||
-                    value.includes('png')    || value.includes('image') || 
+                    value.includes('png')    || value.includes('logo')  ||
                     value.includes('img')    || value.includes('gif')   ||
                     value.includes('bitmap') || value.includes('bmp')   || 
-                    value.includes('svg'))
+                    value.includes('photo')  || value.includes("base64")||
+                    value.includes('displ')  || value.includes('image') || 
+                    value.includes('svg')    || node.nodeType === "IMG"
+                    )
                 ) {
                     node.style.filter = "blur(20px)";
                     node.style.WebkitFilter = "blur(20px)";
@@ -48,7 +57,6 @@ class Tagger {
         }
         console.log("tagged nodes: ", this._tagged_nodes);
         console.log("untagged nodes: ", this._untagged_nodes);
-
     }
 
 }

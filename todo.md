@@ -7,6 +7,7 @@
 -- DOM element access keys
 - Whitelist hosts list
 - Exclude hidden/non human visible photos
+- Handle dynamic scroll loading and pagination
 
 <h1>Considerations</h1>
 
