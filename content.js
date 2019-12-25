@@ -8,12 +8,13 @@ const IMG_KEYWORDS =
 'png' || 'image' || 'img' || 'gif'
 'bitmap' || 'bmp' || 'svg';
 
-class Tagger {
+class Nodes {
     constructor(nodes) {
+        this.is_visible = false;
         this._untagged_nodes = [];
         this._tagged_nodes = [];
         this.set_dom_listener.bind(this);
-        this.listener_callback.bind(this);
+        this._listener_callback.bind(this);
         this._tag.bind(this);
         this._tag(nodes);
     }
@@ -52,6 +53,18 @@ class Tagger {
                     node.style.filter = "blur(20px)";
                     node.style.WebkitFilter = "blur(20px)";
                     node["ip-index"] = new Date().getMilliseconds().toString();
+                    node.addEventListener("click", function(target) {
+                        let count = 20;
+                        if (this.is_visible) {
+                            while (count > 0) {
+                                target.style.filter = `blur(${count = count - .1}px)`;
+                            }
+                        } else {
+                            while(count < 20) {
+                                target.style.filter = `blur(${count = count + .1}px)`;
+                            }
+                        }
+                    }.bind(this)).bind(this);
                     this._tagged_nodes.push(node);
                 }
             }
@@ -60,16 +73,8 @@ class Tagger {
         console.log("untagged nodes: ", this._untagged_nodes);
     }
 
-    set_dom_listener(targetNode) {
-
-        const config = { attributes: true, childList: true, subtree: true };
-        this.listener_callback = this.listener_callback.bind(this);
-        this.observer = new MutationObserver(this.listener_callback);
-        this.observer.observe(targetNode, config);
-        // observer.disconnect();
-    }
-
-    listener_callback(mutationsList, observer) {
+    
+    _listener_callback(mutationsList, observer) {
         for(let mutation of mutationsList) {
             if (mutation.type === 'childList') {
                 console.log('A child node has been added or removed.');
@@ -77,9 +82,16 @@ class Tagger {
                 this._tag(nodes); 
             }
         }
-    };
-
+    }
+    
+    set_dom_listener(targetNode) {
+        const config = { attributes: true, childList: true, subtree: true };
+        this._listener_callback = this._listener_callback.bind(this);
+        this.observer = new MutationObserver(this._listener_callback);
+        this.observer.observe(targetNode, config);
+        // observer.disconnect();
+    }
 }
 
-const tagger = new Tagger(document.querySelectorAll("*"));
-tagger.set_dom_listener(document.body);
+const nodes = new Nodes(document.querySelectorAll("*"));
+nodes.set_dom_listener(document.body);
