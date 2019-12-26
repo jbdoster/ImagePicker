@@ -15,9 +15,9 @@ class Nodes {
         this._tagged_nodes = [];
 
         this._tag.bind(this);
-        this._listener_callback.bind(this);
+        this._onclick.bind(this);
         this.set_dom_listener.bind(this);
-        
+        this._listener_callback.bind(this);
         this._tag(nodes);
     }
 
@@ -69,49 +69,32 @@ class Nodes {
                     value.includes('svg')    || node.nodeType === "IMG"
                 ) {
 
+                    /**
+                     * Rewind a couple parents and add onclick events to any 
+                     * anchor tags to cover bases
+                     */
+                    const rewind_count = 2;
+                    let parent = {};
+                    while (rewind_count > 0) {
+                        parent = parent.parentNode;
+                        rewind_count--;
+                    }
+                    if (!parent) { continue; }
+                    const neighborhood = parent.querySelectorAll("*");
+                    for (const neighbor of neighborhood) {
+                        if (neighbor.nodeName === "A") {
+                            console.log("Neighboring anchor tagged");
+                            neighbor.addEventListener("click", this._onclick);
+                        }
+                    }
+
                     /** b) */
                     node.style.filter = "blur(20px)";
                     node.style.WebkitFilter = "blur(20px)";
                     node["ip-index"] = new Date().getMilliseconds().toString();
 
                     /** c) */
-                    node.addEventListener("click", function(event) {
-                        console.log(
-                        `node ${event.target["ip-index"]} clicked with keydown: ${event.ctrlKey}`
-                        );
-                        
-                        /** 
-                         *  Elements can cover other elements, makes it hard to
-                         *  reference the element the user actually intends to
-                         *  click on. Which element is closest then?
-                         */
-                        let difference = 100000000;
-                        let matched = false;
-                        let nearest_element = 
-                        this._tagged_nodes[0];
-                        for (var node in this._tagged_nodes) {
-                            const difference_x = Math.abs(node.x - event.target.x);
-                            const difference_y = Math.abs(node.y - event.target.y);
-                            const difference_  = (difference_x/difference_y);
-                            if (typeof difference === typeof 0 && difference_ < difference) {
-                                console.log("node matched");
-                                matched = true;
-                                nearest_element = node;
-                                break;
-                            }
-                        }
-
-                        if (matched) {
-                            chrome.storage.local.set({[event.target["ip-index"]]: {clicked:true}});
-    
-                            let count = 20;
-                            while (count > 0) {
-                                console.log("that count: ", count);
-                                event.target.style.filter = `blur(${count = count - .1}px)`;
-                            }
-                        }
-
-                    }.bind(this));
+                    node.addEventListener("click", this._onclick);
 
                     /** d) */
                     this._tagged_nodes.push(node);
@@ -128,6 +111,43 @@ class Nodes {
                 this._tag(nodes); 
             }
         }
+    }
+
+    _onclick(event) {
+        console.log(
+        `node ${event.target["ip-index"]} clicked with keydown: ${event.ctrlKey}`
+        );
+        
+        /** 
+         *  Elements can cover other elements, makes it hard to
+         *  reference the element the user actually intends to
+         *  click on. Which element is closest then?
+         */
+        let difference = 100000000;
+        let matched = false;
+        let nearest_element = 
+        this._tagged_nodes[0];
+        for (var node of this._tagged_nodes) {
+            const difference_x = Math.abs(node.x - event.target.x);
+            const difference_y = Math.abs(node.y - event.target.y);
+            const difference_  = (difference_x/difference_y);
+            if (typeof difference === typeof 0 && difference_ < difference) {
+                console.log("node matched");
+                matched = true;
+                nearest_element = node;
+                break;
+            }
+        }
+
+        if (matched) {
+            chrome.storage.local.set({[event.target["ip-index"]]: {clicked:true}});
+            let count = 20;
+            while (count > 0) {
+                console.log("that count: ", count);
+                event.target.style.filter = `blur(${count = count - .1}px)`;
+            }
+        }
+
     }
     
     set_dom_listener(targetNode) {
