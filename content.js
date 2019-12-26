@@ -73,7 +73,7 @@ class Nodes {
                      * Rewind a couple parents and add onclick events to any 
                      * anchor tags to cover bases
                      */
-                    const rewind_count = 2;
+                    let rewind_count = 2;
                     let parent = {};
                     while (rewind_count > 0) {
                         parent = parent.parentNode;
