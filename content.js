@@ -69,6 +69,14 @@ class Nodes {
                     value.includes('svg')    || node.nodeType === "IMG"
                 ) {
 
+                    /** b) */
+                    node.style.filter = "blur(20px)";
+                    node.style.WebkitFilter = "blur(20px)";
+                    node["ip-index"] = new Date().getMilliseconds().toString();
+
+                    /** c) */
+                    node.addEventListener("click", this._onclick);
+
                     /**
                      * Rewind a couple parents and add onclick events to any 
                      * anchor tags to cover bases
@@ -84,17 +92,10 @@ class Nodes {
                     for (const neighbor of neighborhood) {
                         if (neighbor.nodeName === "A") {
                             console.log("Neighboring anchor tagged");
+                            neighbor["ip-index"] = node["ip-index"];
                             neighbor.addEventListener("click", this._onclick);
                         }
                     }
-
-                    /** b) */
-                    node.style.filter = "blur(20px)";
-                    node.style.WebkitFilter = "blur(20px)";
-                    node["ip-index"] = new Date().getMilliseconds().toString();
-
-                    /** c) */
-                    node.addEventListener("click", this._onclick);
 
                     /** d) */
                     this._tagged_nodes.push(node);
@@ -117,34 +118,18 @@ class Nodes {
         console.log(
         `node ${event.target["ip-index"]} clicked with keydown: ${event.ctrlKey}`
         );
-        
-        /** 
-         *  Elements can cover other elements, makes it hard to
-         *  reference the element the user actually intends to
-         *  click on. Which element is closest then?
-         */
-        let difference = 100000000;
-        let matched = false;
-        let nearest_element = 
-        this._tagged_nodes[0];
-        for (var node of this._tagged_nodes) {
-            const difference_x = Math.abs(node.x - event.target.x);
-            const difference_y = Math.abs(node.y - event.target.y);
-            const difference_  = (difference_x/difference_y);
-            if (typeof difference === typeof 0 && difference_ < difference) {
-                console.log("node matched");
-                matched = true;
-                nearest_element = node;
-                break;
-            }
-        }
 
-        if (matched) {
-            chrome.storage.local.set({[event.target["ip-index"]]: {clicked:true}});
-            let count = 20;
-            while (count > 0) {
-                console.log("that count: ", count);
-                event.target.style.filter = `blur(${count = count - .1}px)`;
+        const nodes = document.body.querySelectorAll("*");
+        for (let node of nodes) {
+            if (node["ip-index"] === event.target["ip-index"]) {
+                chrome.storage.local.set({[node["ip-index"]]: {clicked:true}});
+                let count = 20;
+                do {
+                    console.log("that count: ", count);
+                    node.style.filter = `blur(${count = count - .1}px)`;
+                } 
+                while (count > 0);
+                break;
             }
         }
 
