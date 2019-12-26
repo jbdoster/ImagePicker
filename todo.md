@@ -1,5 +1,4 @@
 <h1>TODO</h1>
-- Ask for permissions
 - Build interface contracts
 - Handle exceptions for chrome/other deniable urls
 - Lib global browser distributor enumeration for dynamic code platform compat
@@ -10,14 +9,16 @@ x Handle dynamic scroll loading and pagination
 - Cache/storage
 - Logging
 - Telemetry
-- Handle click events (hover, or Cartesian coordinate system at worst)
+- Ask for permissions
+x Handle click events
+- Swap click events
 
 
 <h1>Considerations</h1>
 
 <h2>DOM Parsing/Indexing</h2>
 
-Tags don't necessary HAVE to be of type <em>img</em>
+Tags don't necessarily HAVE to be of type <em>img</em>
 to produce an <em>image.</em> 
 
 <em>Consider an example like StackOverflow's logo:</em>

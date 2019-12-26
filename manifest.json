@@ -6,14 +6,16 @@
     "background": {
       "scripts": [
         "background.js"
-      ]
+      ],
+      "persistent": false
     },
     "permissions": [
       "tabs",
       "http://*/*",
       "https://*/*",
       "file://*/*",
-      "ftp://*/*"
+      "ftp://*/*",
+      "storage"
     ],
     "content_scripts": [{
       "matches":    [
