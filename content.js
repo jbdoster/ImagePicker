@@ -74,7 +74,7 @@ class Nodes {
                      * anchor tags to cover bases
                      */
                     let rewind_count = 2;
-                    let parent = {};
+                    let parent = node;
                     while (rewind_count > 0) {
                         parent = parent.parentNode;
                         rewind_count--;
